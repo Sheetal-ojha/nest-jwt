@@ -10,7 +10,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 
 
 @Injectable()
-export class AuthGuard extends PassportAuthGuard('jwt') {
+export class AuthGuard extends PassportAuthGuard('jwt') {// useing passport jwt {use jwt strategy to protect routes} (automatically{extract valid token and attaches user to req})
   constructor(private reflector: Reflector) {
     super();
   }
@@ -19,8 +19,8 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
     const isPublic = this.reflector.getAllAndOverride<boolean>(
       IS_PUBLIC_KEY,
       [
-        context.getHandler(),
-        context.getClass(),
+        context.getHandler(),// yesla login profile pass garcha
+        context.getClass(),// authresolver userresolver
       ],
     );
 
@@ -32,7 +32,7 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
   }
 
  getRequest(context: ExecutionContext) {
-  const ctx = GqlExecutionContext.create(context);
+  const ctx = GqlExecutionContext.create(context);// executioncontext generic hunchha so graphql le req diff form ma store garcha so i cover here using GqlExecutionContext.create(context){ thsi executioncontext is used in guard}(in guard check rout metadata , extract request, decide allo or blick)
   const request = ctx.getContext().req;
   return request;
 }
