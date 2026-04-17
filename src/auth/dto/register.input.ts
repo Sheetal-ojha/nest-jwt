@@ -1,10 +1,13 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsEmail, MinLength, Matches } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 @InputType()
+
 export class RegisterInput {
 
   @Field()
+  @IsNotEmpty({ message: 'Username is required' })
   username!: string;
 
   @Field()
