@@ -53,13 +53,13 @@ async signUp(data: RegisterInput) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const mappedRole =
-    role === Role.admin ? Role.admin : Role.user;
+    role === Role.ADMIN? Role.ADMIN : Role.USER;
 
   return this.userService.createUser({
     username,
     email,
     password: hashedPassword,
-    role: mappedRole,   // ✅ FIXED
+    role: mappedRole,  
   });
 }
   

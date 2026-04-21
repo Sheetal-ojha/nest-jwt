@@ -10,7 +10,7 @@ export class UserResolver {
   constructor(private userService: UserService) {}
 
   
-   @Roles(Role.admin)
+   @Roles(Role.ADMIN)
   @Query(() => [UserEntity])
   users() {
     return this.userService.findAll();
@@ -23,7 +23,7 @@ export class UserResolver {
   // }
 
 
- @Roles(Role.admin, Role.user)
+ @Roles(Role.ADMIN, Role.USER)
   @Query(()=> UserType)
   getUserByUsername(@Args('username')
 username: string){

@@ -9,7 +9,7 @@ export class ProductResolver {
   constructor(private productService: ProductService) {}
 
  
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Mutation(() => String)
   createProduct(
     @Args('name') name: string,
@@ -21,7 +21,7 @@ export class ProductResolver {
   }
 
 
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Mutation(() => String)
   deleteProduct(
     @Args('id', { type: () => Int }) id: number,
@@ -31,7 +31,7 @@ export class ProductResolver {
   }
 
 
-  @Roles(Role.admin, Role.user)
+  @Roles(Role.ADMIN, Role.USER)
   @Query(() => [ProductEntity])
   getProducts() {
     return this.productService.findAll();

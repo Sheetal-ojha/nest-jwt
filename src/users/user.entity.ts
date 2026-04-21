@@ -22,7 +22,7 @@ export class UserEntity {
   @Column({
   type: 'enum',
   enum: Role,
-  default: Role.user,
+  default: Role.USER,
 })
 role!: Role;
 }
