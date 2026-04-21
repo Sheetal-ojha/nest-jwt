@@ -1,6 +1,7 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
-import { IsEmail, MinLength, Matches } from 'class-validator';
+import { IsEmail, MinLength, Matches, IsEnum, IS_ENUM, isEnum } from 'class-validator';
 import { IsNotEmpty } from 'class-validator';
+import { Role } from '../roles.enum';
 
 @InputType()
 
@@ -20,4 +21,9 @@ export class RegisterInput {
     message: 'Password must contain at least 1 number and 1 uppercase letter',
   })
   password!: string;
+
+
+    @Field(() => Role, { nullable: true, })
+    
+  role?: Role;
 }

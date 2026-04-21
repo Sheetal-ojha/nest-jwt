@@ -10,6 +10,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RolesGuard } from './auth/roles.guard';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -41,14 +43,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
     UserModule,
     AuthModule,
+    ProductModule, 
+
+    
   ],
 
   providers: [
-    AppResolver,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  AppResolver,
+  {
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+  },
+  {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },
+],
 })
 export class AppModule {}

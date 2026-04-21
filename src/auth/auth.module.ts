@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from '../users/user.module';
+import { Role } from './roles.enum';
 
 @Module({
   imports: [

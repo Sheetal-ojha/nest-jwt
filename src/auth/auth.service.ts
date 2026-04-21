@@ -3,19 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../users/user.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterInput } from './dto/register.input';
-import { UserEntity } from '../users/user.entity';
-
-
+import { Role } from './roles.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
-   
     private jwtService: JwtService,
   ) {}
 
- 
   async signIn(username: string, password: string) {
     const user = await this.userService.findByUsername(username);
 
@@ -31,23 +27,20 @@ export class AuthService {
 
     const payload = {
       sub: user.id,
-      // username: user.username,
       email: user.email,
+       role: user.role, 
     };
 
     return {
-  id: user.id,
-  username: user.username,
-  access_token: this.jwtService.sign(payload),
-};
+      id: user.id,
+      username: user.username,
+    
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
-  
- async signUp(data: RegisterInput )  { 
-
-  console.log("AUTH SERVICE INPUT:", data);
-
-  const { username, email, password } = data;
+async signUp(data: RegisterInput) {
+  const { username, email, password, role } = data;
 
   const existingUser = await this.userService.findByUsername(username);
 
@@ -55,13 +48,19 @@ export class AuthService {
     throw new UnauthorizedException('User already exists');
   }
 
+  console.log("ROLE RECEIVED:", role);
+
   const hashedPassword = await bcrypt.hash(password, 10);
+
+  const mappedRole =
+    role === Role.admin ? Role.admin : Role.user;
 
   return this.userService.createUser({
     username,
     email,
     password: hashedPassword,
+    role: mappedRole,   // ✅ FIXED
   });
 }
-
+  
 }
