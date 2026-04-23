@@ -3,6 +3,10 @@ import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/roles.enum';
 import { ProductService } from './product.service';
 import { ProductEntity } from './product.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { UseGuards } from '@nestjs/common';
+
 
 @Resolver()
 export class ProductResolver {
@@ -10,19 +14,34 @@ export class ProductResolver {
 
  
   @Roles(Role.ADMIN)
-  @Mutation(() => String)
-  createProduct(
-    @Args('name') name: string,
-    @Args('price') price: number,
-    @Args('description') description: string,
-  ) {
-    this.productService.create({ name, price, description });
-    return "Product created";
-  }
+@Mutation(() => ProductEntity)
+async createProduct(
+  @Args('name') name: string,
+  @Args('price') price: number,
+  @Args('description') description: string,
+) {
+  return await this.productService.create({
+    name,
+    price,
+    description,
+  });
+}
+
+
+// @UseGuards(JwtAuthGuard, RolesGuard)
+// @Roles(Role.ADMIN)
+// @Mutation(() => ProductEntity)
+// updateProduct(
+//   @Args('id') id: number,
+//   @Args('input') input: UpdateProductInput,
+// ) {
+//   return this.productService.update(id, input);
+// }
+
 
 
   @Roles(Role.ADMIN)
-  @Mutation(() => String)
+  @Mutation(() => ProductEntity)
   deleteProduct(
     @Args('id', { type: () => Int }) id: number,
   ) {
@@ -32,8 +51,8 @@ export class ProductResolver {
 
 
   @Roles(Role.ADMIN, Role.USER)
-  @Query(() => [ProductEntity])
-  getProducts() {
-    return this.productService.findAll();
-  }
+  @Query(() => ProductEntity)
+getProductByName(@Args('name') name: string) {
+  return this.productService.findByName(name);
+}
 }
