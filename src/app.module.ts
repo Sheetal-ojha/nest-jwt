@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppResolver } from './app.resolver';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+
 
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
@@ -39,6 +41,14 @@ import { ProductModule } from './product/product.module';
       driver: ApolloDriver,
       autoSchemaFile: true,
       context: ({ req }) => ({ req }),
+
+  playground: false,
+         introspection: true,
+
+
+  plugins: [
+    ApolloServerPluginLandingPageLocalDefault(),
+  ],
     }),
 
     UserModule,
