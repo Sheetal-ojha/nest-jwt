@@ -6,6 +6,7 @@ import { ProductEntity } from './product.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { UseGuards } from '@nestjs/common';
+import { UpdateProductInput } from './dto/update-product.input';
 
 
 @Resolver()
@@ -28,18 +29,18 @@ async createProduct(
 }
 
 
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
-// @Mutation(() => ProductEntity)
-// updateProduct(
-//   @Args('id') id: number,
-//   @Args('input') input: UpdateProductInput,
-// ) {
-//   return this.productService.update(id, input);
-// }
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
+@Mutation(() => ProductEntity)
+updateProduct(
+  @Args('id', { type: () => Int }) id: number,
+  @Args('input') input: UpdateProductInput,
+) {
+  return this.productService.update(id, input);
+}
 
 
-
+@UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Mutation(() => ProductEntity)
   deleteProduct(

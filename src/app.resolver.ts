@@ -1,4 +1,5 @@
 import { Resolver, Query, Context } from '@nestjs/graphql';
+import { UserType } from './users/dto/user.type';
 
 @Resolver()
 export class AppResolver {
@@ -9,8 +10,8 @@ export class AppResolver {
   }
 
 
-  @Query(() => String)
+  @Query(() => UserType)
   getProfile(@Context() context) {
-    return JSON.stringify(context.req.user);
+     return context.req.user;
   }
 }

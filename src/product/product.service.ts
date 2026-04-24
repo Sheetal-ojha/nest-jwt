@@ -28,5 +28,16 @@ export class ProductService {
     return this.repo.findOne({
       where: { name },
     });
+
   }
+ async update(id: number, data: Partial<ProductEntity>) {
+  const product = await this.repo.findOne({ where: { id } });
+
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  Object.assign(product, data);
+  return this.repo.save(product);
+}
 }

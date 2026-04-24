@@ -15,7 +15,7 @@ export class ProductEntity {
   
 
   @Field()
-  @Column()
+  @Column('float')
   price!: number;
 
   @Field()
