@@ -20,11 +20,13 @@ async createProduct(
   @Args('name') name: string,
   @Args('price') price: number,
   @Args('description') description: string,
+  @Args('image') image: string,
 ) {
   return await this.productService.create({
     name,
     price,
     description,
+    image,
   });
 }
 

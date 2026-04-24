@@ -11,4 +11,7 @@ export class CreateProductInput {
 
   @Field()
   description!: string;
+
+   @Field({ nullable: true })
+  image?: string;
 } 

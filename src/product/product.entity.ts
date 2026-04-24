@@ -21,4 +21,8 @@ export class ProductEntity {
   @Field()
   @Column()
   description!: string;
+
+    @Field({ nullable: true })
+  @Column({ nullable: true })
+  image!: string;
 }

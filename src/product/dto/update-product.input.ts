@@ -10,4 +10,7 @@ export class UpdateProductInput {
 
   @Field({ nullable: true })
   description?: string;
+
+    @Field({ nullable: true })
+  image?: string; 
 }
