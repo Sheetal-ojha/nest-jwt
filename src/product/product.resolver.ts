@@ -42,7 +42,7 @@ getAllProducts() {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 @Mutation(() => ProductEntity)
-updateProduct(
+async updateProduct(
   @Args('id', { type: () => Int }) id: number,
   @Args('input') input: UpdateProductInput,
 ) {
