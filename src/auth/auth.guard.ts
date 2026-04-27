@@ -25,7 +25,7 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext()?.req;
 
-    // 🔥 IMPORTANT: prevent undefined crash
+   
     if (!req) {
       throw new Error('Request not found in GraphQL context');
     }

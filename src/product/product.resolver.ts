@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/roles.enum';
 import { ProductService } from './product.service';
@@ -32,6 +32,14 @@ async createProduct(
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN, Role.USER)
+@Query(() => [ProductEntity])
+getAllProducts() {
+  return this.productService.findAll();
+}
+
+
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 @Mutation(() => ProductEntity)
 updateProduct(
@@ -43,19 +51,20 @@ updateProduct(
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  @Mutation(() => ProductEntity)
-  deleteProduct(
-    @Args('id', { type: () => Int }) id: number,
-  ) {
-    this.productService.remove(id);
-    return "Product deleted";
-  }
+@Roles(Role.ADMIN)
+@Mutation(() => Boolean)
+async deleteProduct(
+  @Args('id', { type: () => Int }) id: number,
+): Promise<boolean> {
+  await this.productService.remove(id);
+  return true;
+}
 
-
+@UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Query(() => ProductEntity)
-getProductByName(@Args('name') name: string) {
-  return this.productService.findByName(name);
+getProductById(  @Args('id', { type: () => Int }) id: number,
+) {
+  return this.productService.findById(id);
 }
 }

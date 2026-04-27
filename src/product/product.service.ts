@@ -20,13 +20,21 @@ export class ProductService {
     return this.repo.find();
   }
 
-  remove(id: number) {
-    return this.repo.delete(id);
+  async remove(id: number) {
+  const product = await this.repo.findOne({ where: { id } });
+
+  if (!product) {
+    throw new Error('Product not found');
   }
+
+  await this.repo.remove(product);
+
+  
+}
  
-  async findByName(name: string) {
+  async findById(id: number) {
     return this.repo.findOne({
-      where: { name },
+      where: { id },
     });
 
   }

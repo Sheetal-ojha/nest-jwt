@@ -14,12 +14,16 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from './auth/roles.guard';
 import { ProductModule } from './product/product.module';
+import { UploadController } from './uploads/upload.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+
+
+   
     }),
 
     TypeOrmModule.forRootAsync({
@@ -54,9 +58,9 @@ import { ProductModule } from './product/product.module';
     UserModule,
     AuthModule,
     ProductModule, 
-
-    
   ],
+
+     controllers: [UploadController],
 
   providers: [
   AppResolver,
