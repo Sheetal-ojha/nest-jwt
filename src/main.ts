@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 import * as express from 'express';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,11 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+
+
 
   const port = process.env.PORT || 4000;
 

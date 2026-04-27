@@ -3,6 +3,7 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -23,9 +24,11 @@ export class UploadController {
       }),
     }),
   )
-  uploadFile(@UploadedFile() file: any) {
-    return {
-      imageUrl: `http://localhost:4000/uploads/${file.filename}`,
-    };
-  }
+  uploadFile(@UploadedFile() file: any, @Req() req: any) {
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+
+  return {
+    imageUrl: `${baseUrl}/uploads/${file.filename}`,
+  };
+}
 }
