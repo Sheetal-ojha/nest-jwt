@@ -4,9 +4,9 @@ import { ObjectType,Field, Int, Float } from '@nestjs/graphql';
 @Entity()
 export class ProductEntity {
 
-    @Field()
-  @PrimaryGeneratedColumn()
-  id!: number;
+   @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id!: string;
 
 
   @Field()

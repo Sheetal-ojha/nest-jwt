@@ -13,7 +13,7 @@ import { UpdateProductInput } from './dto/update-product.input';
 export class ProductResolver {
   constructor(private productService: ProductService) {}
 
- 
+ @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
 @Mutation(() => ProductEntity)
 async createProduct(
@@ -43,9 +43,10 @@ getAllProducts() {
 @Roles(Role.ADMIN)
 @Mutation(() => ProductEntity)
 async updateProduct(
-  @Args('id', { type: () => Int }) id: number,
+  @Args('id', { type: () => String }) id: string,
   @Args('input') input: UpdateProductInput,
 ) {
+  console.log("INPUT:", input);
   return this.productService.update(id, input);
 }
 
@@ -54,7 +55,7 @@ async updateProduct(
 @Roles(Role.ADMIN)
 @Mutation(() => Boolean)
 async deleteProduct(
-  @Args('id', { type: () => Int }) id: number,
+  @Args('id', { type: () => String }) id: string,
 ): Promise<boolean> {
   await this.productService.remove(id);
   return true;
@@ -63,7 +64,7 @@ async deleteProduct(
 @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Query(() => ProductEntity)
-getProductById(  @Args('id', { type: () => Int }) id: number,
+getProductById(  @Args('id', { type: () => String }) id: string,
 ) {
   return this.productService.findById(id);
 }

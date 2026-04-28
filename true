@@ -1,0 +1,64 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  Role: String!
+  access_token: String!
+  id: Float!
+  username: String!
+}
+
+input LoginInput {
+  password: String!
+  username: String!
+}
+
+type Mutation {
+  createProduct(description: String!, image: String!, name: String!, price: Float!): ProductEntity!
+  deleteProduct(id: String!): Boolean!
+  login(input: LoginInput!): AuthResponse!
+  signup(input: RegisterInput!): UserType!
+  updateProduct(id: String!, input: UpdateProductInput!): ProductEntity!
+}
+
+type ProductEntity {
+  description: String!
+  id: String!
+  image: String
+  name: String!
+  price: Float!
+}
+
+type Query {
+  getAllProducts: [ProductEntity!]!
+  getProductById(id: String!): ProductEntity!
+  getProfile: UserType!
+  hello: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  role: Role
+  username: String!
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+input UpdateProductInput {
+  description: String
+  image: String
+  name: String
+  price: Float
+}
+
+type UserType {
+  email: String!
+  id: Int!
+  role: Role!
+  username: String!
+}

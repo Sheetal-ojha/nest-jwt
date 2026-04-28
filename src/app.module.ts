@@ -3,7 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppResolver } from './app.resolver';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-
+import { Schema } from 'inspector/promises';
 
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from './auth/roles.guard';
 import { ProductModule } from './product/product.module';
-import { UploadController } from './uploads/upload.controller';
+// import { UploadController } from './uploads/upload.controller';
 
 @Module({
   imports: [
@@ -43,8 +43,9 @@ import { UploadController } from './uploads/upload.controller';
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
       context: ({ req }) => ({ req }),
+      sortSchema: true,
 
   playground: false,
          introspection: true,
@@ -60,7 +61,7 @@ import { UploadController } from './uploads/upload.controller';
     ProductModule, 
   ],
 
-     controllers: [UploadController],
+    //  controllers: [UploadController],
 
   providers: [
   AppResolver,
