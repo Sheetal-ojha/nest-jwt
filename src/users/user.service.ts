@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { Role } from '../auth/roles.enum';
 
 @Injectable()
 export class UserService {
@@ -16,9 +17,9 @@ export class UserService {
   }
 
   
-  // findById(id: number) {
-  //   return this.repo.findOne({ where: { id } });
-  // }
+  findById(id: string) {
+    return this.repo.findOne({ where: { id } });
+  }
 
   findByUsername(username: string) {
     return this.repo.findOne({ where: { username: username } });
@@ -26,6 +27,12 @@ export class UserService {
  findByEmail(email: string){
   return this.repo.findOne({where:{email:email}})
  }
+
+
+
+  findByRole(role: Role) {
+    return this.repo.findOne({ where: { role } });
+  }
  
   createUser(data: Partial<UserEntity>) {
     const user = this.repo.create(data);

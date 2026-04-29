@@ -5,19 +5,16 @@ import * as bcrypt from 'bcrypt';
 import { RegisterInput } from './dto/register.input';
 import { Role } from './roles.enum';
 import { UserEntity } from '../users/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { IsEmail } from 'class-validator';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    
   ) {}
 
-  async signIn(email:string,password: string) {
-    const user = await this.userService.findByEmail(email)
+  async signIn(email: string, password: string) {
+    const user = await this.userService.findByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException('User not found');
@@ -32,41 +29,45 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
-       role: user.role, 
+      role: user.role,
     };
 
     return {
       id: user.id,
       username: user.username,
-    
       access_token: this.jwtService.sign(payload),
     };
   }
 
-async signUp(data: RegisterInput):Promise<UserEntity>{
-  const { username, email, password, role } = data;
+  async signUp(data: RegisterInput): Promise<UserEntity> {
+    const { username, email, password, role } = data;
 
-  const existingUser = await this.userService.findByEmail(email)
+    const existingUser = await this.userService.findByEmail(email);
+    if (existingUser) {
+      throw new UnauthorizedException('User already exists');
+    }
 
-  if (existingUser) {
-    throw new UnauthorizedException('User already exists');
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    let assignedRole = Role.USER;
+
+    if (role === Role.ADMIN) {
+      const adminExists = await this.userService.findByRole(Role.ADMIN);
+
+      if (adminExists) {
+        throw new UnauthorizedException(
+          'Admin already exists. You cannot sign up as admin.',
+        );
+      }
+
+      assignedRole = Role.ADMIN;
+    }
+
+    return this.userService.createUser({
+      username,
+      email,
+      password: hashedPassword,
+      role: assignedRole,
+    });
   }
-
-  console.log("ROLE RECEIVED:", role);
-
-  const existsEmail = await this.userService.findByEmail
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const mappedRole =
-    role === Role.ADMIN? Role.ADMIN : Role.USER;
-
-  return this.userService.createUser({
-    username,
-    email,
-    password: hashedPassword,
-    role: mappedRole,  
-  });
-}
-  
 }
