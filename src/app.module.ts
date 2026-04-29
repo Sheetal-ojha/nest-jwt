@@ -14,7 +14,12 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from './auth/roles.guard';
 import { ProductModule } from './product/product.module';
-// import { UploadController } from './uploads/upload.controller';
+// import { UploadsController } from './uploads/uploads.controller';
+import { UploadModule } from './uploads/upload.module';
+import { UploadController } from './uploads/upload.controller';
+
+
+
 
 @Module({
   imports: [
@@ -59,6 +64,7 @@ import { ProductModule } from './product/product.module';
     UserModule,
     AuthModule,
     ProductModule, 
+    UploadModule,
   ],
 
     //  controllers: [UploadController],
