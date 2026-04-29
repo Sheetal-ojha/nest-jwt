@@ -10,8 +10,12 @@ import {
 import { IsNotEmpty } from 'class-validator';
 import { Role } from '../roles.enum';
 
+
+
 @InputType()
 export class RegisterInput {
+
+  
   @Field()
   @IsNotEmpty({ message: 'Username is required' })
   username!: string;

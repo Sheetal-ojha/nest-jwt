@@ -58,7 +58,7 @@ input UpdateProductInput {
 
 type UserType {
   email: String!
-  id: Int!
+  id: String!
   role: Role!
   username: String!
 }

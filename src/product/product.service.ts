@@ -44,16 +44,9 @@ async update(id: string, input: UpdateProductInput) {
     throw new Error('Product not found');
   }
 
-  const cleanInput = Object.fromEntries(
-    Object.entries(input).filter(([_, v]) => v !== undefined && v !== null),
-  );
+  
+  Object.assign(product, input);
 
-  if (Object.keys(cleanInput).length === 0) {
-    throw new Error('No update data received');
-  }
-
-  return await this.repo.update(id, cleanInput);
-
-  // return this.repo.findOne({ where: { id } });
+  return this.repo.save(product);
 }
 }

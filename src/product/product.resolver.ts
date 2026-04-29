@@ -46,7 +46,8 @@ async updateProduct(
   @Args('id', { type: () => String }) id: string,
   @Args('input') input: UpdateProductInput,
 ) {
-  console.log("INPUT:", input);
+  console.log("RAW INPUT:", JSON.stringify(input)); // add this
+  console.log("INPUT KEYS:", Object.keys(input));   // add this
   return this.productService.update(id, input);
 }
 

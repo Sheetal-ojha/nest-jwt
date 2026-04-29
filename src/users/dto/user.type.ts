@@ -1,10 +1,12 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Role } from '../../auth/roles.enum';
+import { PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
 export class UserType {
-  @Field(() => Int)
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id!: string;
 
   @Field()
   username!: string;

@@ -4,16 +4,20 @@ import { UserService } from '../users/user.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterInput } from './dto/register.input';
 import { Role } from './roles.enum';
+import { UserEntity } from '../users/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IsEmail } from 'class-validator';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    
   ) {}
 
-  async signIn(username: string, password: string) {
-    const user = await this.userService.findByUsername(username);
+  async signIn(email:string,password: string) {
+    const user = await this.userService.findByEmail(email)
 
     if (!user) {
       throw new UnauthorizedException('User not found');
@@ -39,16 +43,18 @@ export class AuthService {
     };
   }
 
-async signUp(data: RegisterInput) {
+async signUp(data: RegisterInput):Promise<UserEntity>{
   const { username, email, password, role } = data;
 
-  const existingUser = await this.userService.findByUsername(username);
+  const existingUser = await this.userService.findByEmail(email)
 
   if (existingUser) {
     throw new UnauthorizedException('User already exists');
   }
 
   console.log("ROLE RECEIVED:", role);
+
+  const existsEmail = await this.userService.findByEmail
 
   const hashedPassword = await bcrypt.hash(password, 10);
 

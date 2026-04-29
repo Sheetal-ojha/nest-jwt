@@ -23,7 +23,9 @@ export class UserService {
   findByUsername(username: string) {
     return this.repo.findOne({ where: { username: username } });
   }
-
+ findByEmail(email: string){
+  return this.repo.findOne({where:{email:email}})
+ }
  
   createUser(data: Partial<UserEntity>) {
     const user = this.repo.create(data);
