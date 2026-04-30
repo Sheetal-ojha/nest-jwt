@@ -17,7 +17,7 @@ import { ProductModule } from './product/product.module';
 // import { UploadsController } from './uploads/uploads.controller';
 import { UploadModule } from './uploads/upload.module';
 import { UploadController } from './uploads/upload.controller';
-
+import { OrderModule } from './order/order.module';
 
 
 
@@ -65,6 +65,7 @@ import { UploadController } from './uploads/upload.controller';
     AuthModule,
     ProductModule, 
     UploadModule,
+    OrderModule,
   ],
 
     //  controllers: [UploadController],

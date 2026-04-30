@@ -1,50 +1,129 @@
-// import { Injectable } from '@nestjs/common';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { Repository } from 'typeorm';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Order, OrderStatus } from './order.entity';
+import { OrderItem } from './order-item.entity';
+import { ProductEntity } from '../product/product.entity';
+import { UserEntity } from '../users/user.entity';
+import { CreateOrderInput } from './dto/create-order.input';
 
-// import { Order } from './order.entity';
-// import { OrderItem } from './order-item.entity';
-// import { UserEntity } from '../users/user.entity';
-// import { ProductEntity } from '../product/product.entity';
-// import { CreateOrderInput } from './dto/create-order.input';
+@Injectable()
+export class OrderService {
+  constructor(
+    @InjectRepository(Order)
+    private orderRepo: Repository<Order>,
 
-// @Injectable()
-// export class OrderService {
-//   constructor(
-//     @InjectRepository(Order)
-//     private orderRepo: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private orderItemRepo: Repository<OrderItem>,
 
-//     @InjectRepository(UserEntity)
-//     private userRepo: Repository<UserEntity>,
+    @InjectRepository(ProductEntity)
+    private productRepo: Repository<ProductEntity>,
 
-//     @InjectRepository(ProductEntity)
-//     private productRepo: Repository<ProductEntity>,
-//   ) {}
+    @InjectRepository(UserEntity)
+    private userRepo: Repository<UserEntity>,
+  ) {}
 
-//   async createOrder(userId: number, input: CreateOrderInput) {
-//     const order = new Order();
+  async createOrder(userId: string, input: CreateOrderInput): Promise<Order> {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
 
-//     const user = await this.userRepo.findOneBy({ id: userId });
-//     if (!user) throw new Error('User not found');
+    const orderItems: OrderItem[] = [];
+    let total_amount = 0;
 
-//     order.user = user;
-//     order.items = [];
+    for (const item of input.order_items) {
+      const product = await this.productRepo.findOne({
+        where: { id: item.product_id },
+      });
 
-//     for (const item of input.items) {
-//       const product = await this.productRepo.findOneBy({
-//         id: item.productId,
-//       });
+      if (!product) {
+        throw new NotFoundException(`Product ${item.product_id} not found`);
+      }
 
-//       if (!product) throw new Error('Product not found');
+      if (product.quantity < item.quantity) {
+        throw new BadRequestException(
+          `Not enough stock for ${product.name}. Available: ${product.quantity}`,
+        );
+      }
 
-//       const orderItem = new OrderItem();
-//       orderItem.product = product;
-//       orderItem.quantity = item.quantity;
-//       orderItem.price = product.price;
+      const subtotal = product.price * item.quantity;
+      total_amount += subtotal;
 
-//       order.items.push(orderItem);
-//     }
+      const orderItem = this.orderItemRepo.create({
+        product,
+        quantity: item.quantity,
+        price: product.price,
+        subtotal,
+      });
 
-//     return this.orderRepo.save(order);
-//   }
-// }
+      orderItems.push(orderItem);
+    }
+
+    const order = this.orderRepo.create({
+      user,
+      shipping_address: input.shipping_address,
+      payment_method: input.payment_method,
+      total_amount,
+      order_items: orderItems,
+      status: OrderStatus.PENDING,
+    });
+
+    const savedOrder = await this.orderRepo.save(order);
+
+   
+    for (const item of input.order_items) {
+      await this.productRepo.decrement(
+        { id: item.product_id },
+        'quantity',
+        item.quantity,
+      );
+    }
+
+    return savedOrder;
+  }
+
+  async ordersByUser(userId: string): Promise<Order[]> {
+    return this.orderRepo.find({
+      where: { user: { id: userId } },
+      order: { created_at: 'DESC' },
+    });
+  }
+
+  async order(id: string): Promise<Order> {
+    const order = await this.orderRepo.findOne({ where: { id } });
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
+  }
+
+  async updateOrder(id: string, status: OrderStatus): Promise<Order> {
+    const order = await this.orderRepo.findOne({ where: { id } });
+    if (!order) throw new NotFoundException('Order not found');
+
+    order.status = status;
+    return this.orderRepo.save(order);
+  }
+
+  async deleteOrder(id: string): Promise<Order> {
+    const order = await this.orderRepo.findOne({ where: { id } });
+    if (!order) throw new NotFoundException('Order not found');
+
+    if (order.status !== OrderStatus.PENDING) {
+      throw new BadRequestException('Only PENDING orders can be cancelled');
+    }
+
+    // restore product quantities
+    for (const item of order.order_items) {
+      await this.productRepo.increment(
+        { id: item.product.id },
+        'quantity',
+        item.quantity,
+      );
+    }
+
+    order.status = OrderStatus.CANCELLED;
+    return this.orderRepo.save(order);
+  }
+}

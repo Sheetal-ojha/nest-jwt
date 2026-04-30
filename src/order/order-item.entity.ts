@@ -1,20 +1,29 @@
-// order-item.entity.ts
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Order } from './order.entity';
 import { ProductEntity } from '../product/product.entity';
-// import { Order } from './order.entity';
-import { Field, ObjectType, Int, Float } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
 export class OrderItem {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @Field()
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-  // @ManyToOne(() => Order, (order) => order.items)
-  // order!: Order;
+  @ManyToOne(() => Order, (order) => order.order_items, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  order!: Order;
 
-  @ManyToOne(() => ProductEntity)
+  @ManyToOne(() => ProductEntity, { eager: true })
+  @JoinColumn()
   @Field(() => ProductEntity)
   product!: ProductEntity;
 
@@ -23,6 +32,10 @@ export class OrderItem {
   quantity!: number;
 
   @Field(() => Float)
-  @Column()
+  @Column('float')
   price!: number;
+
+  @Field(() => Float)
+  @Column('float')
+  subtotal!: number;
 }

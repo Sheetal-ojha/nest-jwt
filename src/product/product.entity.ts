@@ -1,5 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 import { ObjectType,Field, Int, Float } from '@nestjs/graphql';
+// import { Stock } from '../stock/stock.entity';
+
+
 @ObjectType()
 @Entity()
 export class ProductEntity {
@@ -25,4 +28,9 @@ export class ProductEntity {
     @Field({ nullable: true })
   @Column({ nullable: true })
   image!: string;
+
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  quantity!: number;
 }
