@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID, Float } from '@nestjs/graphql';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/roles.enum';
 import { ProductService } from './product.service';
@@ -18,17 +18,14 @@ export class ProductResolver {
 @Mutation(() => ProductEntity)
 async createProduct(
   @Args('name') name: string,
-  @Args('price') price: number,
+  @Args('price', { type: () => Float  }) price: number,
   @Args('description') description: string,
-  @Args('image') image: string,
+  @Args('image', { nullable: true }) image: string,
+  @Args('quantity', { type: () => Int, defaultValue: 0 }) quantity: number, // ✅ add
 ) {
-  return await this.productService.create({
-    name,
-    price,
-    description,
-    image,
-  });
+  return this.productService.create({ name, price, description, image, quantity });
 }
+
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)

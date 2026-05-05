@@ -24,7 +24,7 @@ export class AuthResolver {
   @Public()
   @Mutation(() => AuthResponse)
   login(@Args('input') input: LoginInput) {
-    return this.authService.signIn(input.username, input.password);
+    return this.authService.signIn(input.email, input.password);
   }
 }
 

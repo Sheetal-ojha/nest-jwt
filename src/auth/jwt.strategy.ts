@@ -6,11 +6,11 @@ import { UserService } from '../users/user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  private userService: UserService; // ✅ declare separately
+  private userService: UserService; 
 
   constructor(
-    configService: ConfigService, // ✅ no private here
-    userService: UserService,     // ✅ no private here
+    configService: ConfigService,
+    userService: UserService,    
   ) {
     const secret = configService.get<string>('JWT_SECRET');
 
@@ -18,19 +18,19 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new Error('JWT_SECRET is missing in .env');
     }
 
-    // super() must be called before anything else
+  
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: secret,
     });
 
-    // ✅ assign after super()
+    
     this.userService = userService;
   }
 
   async validate(payload: any) {
-    const user = await this.userService.findById(payload.sub); // ✅ works now
+    const user = await this.userService.findById(payload.sub); 
 
     if (!user) {
       throw new UnauthorizedException(
@@ -42,6 +42,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       userId: user.id,
       email: user.email,
       role: user.role,
+      username:user.username,
     };
   }
 }

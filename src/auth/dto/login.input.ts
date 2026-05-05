@@ -5,8 +5,8 @@ import { Role } from '../roles.enum';
 @InputType()
 export class LoginInput {
   @Field()
-  @IsNotEmpty({ message: 'Username is required' })
-  username!: string;
+  @IsNotEmpty({ message: ' required' })
+  email!: string;
 
   @Field()
   @MinLength(6, { message: 'Password must be at least 6 characters' })

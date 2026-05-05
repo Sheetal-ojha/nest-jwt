@@ -9,25 +9,82 @@ type AuthResponse {
   username: String!
 }
 
+input CreateOrderInput {
+  order_items: [OrderItemInput!]!
+  payment_method: PaymentMethod!
+  shipping_address: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 input LoginInput {
+  email: String!
   password: String!
-  username: String!
 }
 
 type Mutation {
-  createProduct(description: String!, image: String!, name: String!, price: Float!): ProductEntity!
+  createOrder(input: CreateOrderInput!): Order!
+  createProduct(description: String!, image: String, name: String!, price: Float!, quantity: Int! = 0): ProductEntity!
+  deleteOrder(id: String!): Order!
   deleteProduct(id: String!): Boolean!
   login(input: LoginInput!): AuthResponse!
   signup(input: RegisterInput!): UserType!
+  updateMyOrder(id: String!, shipping_address: String!): Order!
+  updateOrder(id: String!, status: OrderStatus!): Order!
   updateProduct(id: String!, input: UpdateProductInput!): ProductEntity!
+}
+
+type Order {
+  created_at: DateTime!
+  id: String!
+  order_date: DateTime!
+  order_items: [OrderItem!]!
+  payment_method: PaymentMethod!
+  shipping_address: String!
+  status: OrderStatus!
+  total_amount: Float!
+  updated_at: DateTime!
+  user: UserEntity!
+}
+
+type OrderItem {
+  id: String!
+  price: Float!
+  product: ProductEntity!
+  quantity: Int!
+  subtotal: Float!
+}
+
+input OrderItemInput {
+  product_id: String!
+  quantity: Int!
+}
+
+enum OrderStatus {
+  CANCELLED
+  DELIVERED
+  PENDING
+  PROCESSING
+  SHIPPED
+}
+
+enum PaymentMethod {
+  CASH_ON_DELIVERY
+  CREDIT_CARD
+  ESEWA
+  KHALTI
 }
 
 type ProductEntity {
   description: String!
   id: String!
   image: String
-  name: String!
-  price: Float!
+  name: String
+  price: Float
+  quantity: Int
 }
 
 type Query {
@@ -35,6 +92,8 @@ type Query {
   getProductById(id: String!): ProductEntity!
   getProfile: UserType!
   hello: String!
+  order(id: String!): Order!
+  ordersByUser: [Order!]!
 }
 
 input RegisterInput {
@@ -54,6 +113,15 @@ input UpdateProductInput {
   image: String
   name: String
   price: Float
+  quantity: Int
+}
+
+type UserEntity {
+  email: String!
+  id: String!
+  orders: [Order!]
+  role: String!
+  username: String!
 }
 
 type UserType {
