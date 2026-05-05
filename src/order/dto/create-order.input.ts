@@ -13,9 +13,9 @@ export class OrderItemInput {
   @Field(() => Int)
   quantity!: number;
 
-  @IsNumber()
-  @Field(() => Float)
-  price!: number;
+  // @IsNumber()
+  // @Field(() => Float)
+  // price!: number;
 }
 
 @InputType()
@@ -30,6 +30,7 @@ export class CreateOrderInput {
 
   @IsArray()
   @ValidateNested({ each: true }) 
-  @Type(() => OrderItemInput)     
+  @Type(() => OrderItemInput)
+    @Field(() => [OrderItemInput])     
   order_items!: OrderItemInput[];
 }

@@ -12,12 +12,12 @@ export class ProductEntity {
   id!: string;
 
 
-  @Field()
+  @Field({nullable:true})
   @Column()
   name!: string;
   
 
-  @Field()
+  @Field({nullable:true})
   @Column('float')
   price!: number;
 
@@ -30,7 +30,7 @@ export class ProductEntity {
   image!: string;
 
 
-  @Field(() => Int)
+  @Field(() => Int, {nullable:true})
   @Column({ default: 0 })
   quantity!: number;
 }

@@ -13,4 +13,4 @@ import { UserEntity } from '../users/user.entity';
   ],
   providers: [OrderService, OrderResolver],
 })
-export class OrderModule {}
+export class OrderModule {} 

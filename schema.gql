@@ -10,6 +10,7 @@ type AuthResponse {
 }
 
 input CreateOrderInput {
+  order_items: [OrderItemInput!]!
   payment_method: PaymentMethod!
   shipping_address: String!
 }
@@ -31,6 +32,7 @@ type Mutation {
   deleteProduct(id: String!): Boolean!
   login(input: LoginInput!): AuthResponse!
   signup(input: RegisterInput!): UserType!
+  updateMyOrder(id: String!, shipping_address: String!): Order!
   updateOrder(id: String!, status: OrderStatus!): Order!
   updateProduct(id: String!, input: UpdateProductInput!): ProductEntity!
 }
@@ -56,6 +58,11 @@ type OrderItem {
   subtotal: Float!
 }
 
+input OrderItemInput {
+  product_id: String!
+  quantity: Int!
+}
+
 enum OrderStatus {
   CANCELLED
   DELIVERED
@@ -75,9 +82,9 @@ type ProductEntity {
   description: String!
   id: String!
   image: String
-  name: String!
-  price: Float!
-  quantity: Int!
+  name: String
+  price: Float
+  quantity: Int
 }
 
 type Query {

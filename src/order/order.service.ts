@@ -106,6 +106,22 @@ export class OrderService {
     return this.orderRepo.save(order);
   }
 
+
+  async updateMyOrder(id: string, userId: string, shipping_address: string): Promise<Order> {
+  const order = await this.orderRepo.findOne({
+    where: { id, user: { id: userId } },
+  });
+
+  if (!order) throw new NotFoundException('Order not found');
+
+  if (order.status !== OrderStatus.PENDING) {
+    throw new BadRequestException('Cannot update order after it is confirmed');
+  }
+
+  order.shipping_address = shipping_address;
+  return this.orderRepo.save(order);
+}
+
   async deleteOrder(id: string): Promise<Order> {
     const order = await this.orderRepo.findOne({ where: { id } });
     if (!order) throw new NotFoundException('Order not found');
@@ -114,7 +130,7 @@ export class OrderService {
       throw new BadRequestException('Only PENDING orders can be cancelled');
     }
 
-    // restore product quantities
+    // decrease order after save order
     for (const item of order.order_items) {
       await this.productRepo.increment(
         { id: item.product.id },

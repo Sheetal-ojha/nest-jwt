@@ -53,4 +53,15 @@ export class OrderResolver {
   deleteOrder(@Args('id') id: string) {
     return this.orderService.deleteOrder(id);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.USER, Role.ADMIN)
+@Mutation(() => Order)
+updateMyOrder(
+  @Args('id') id: string,
+  @Args('shipping_address') shipping_address: string,
+  @CurrentUser() user: any,
+) {
+  return this.orderService.updateMyOrder(id, user.userId, shipping_address);
+}
 }
