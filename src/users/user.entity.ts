@@ -34,8 +34,9 @@ export class UserEntity {
   default: Role.USER,
 })
 role!: Role;
-// inside UserEntity class add:
+
+
 @OneToMany(() => Order, (order) => order.user)
-@Field(() => [Order], { nullable: true })
+// @Field(() => [Order], { nullable: true })
 orders?: Order[];
 }

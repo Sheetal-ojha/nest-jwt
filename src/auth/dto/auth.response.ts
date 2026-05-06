@@ -3,14 +3,14 @@ import { Role } from '../roles.enum';
 
 @ObjectType()
 export class AuthResponse {
-  @Field()
-  id!: number;
+  // @Field()
+  // id!: number;
 
-  @Field()
-  username!: string;
+  // @Field()
+  // username!: string;
 
-  @Field()
-  Role!: string;
+  // @Field()
+  // Role!: string;
 
   @Field()
   access_token!: string;

@@ -1,12 +1,13 @@
 import { Resolver, Mutation, Query, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { Order, OrderStatus } from './order.entity';
+import { Order } from './order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/roles.enum';
+import { OrderStatus } from './enums/order.enum';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Resolver()
@@ -63,5 +64,12 @@ updateMyOrder(
   @CurrentUser() user: any,
 ) {
   return this.orderService.updateMyOrder(id, user.userId, shipping_address);
+}
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
+@Query(() => [Order])
+getAllOrders() {
+  return this.orderService.getAllOrders();
 }
 }

@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order, OrderStatus } from './order.entity';
+
 import { OrderItem } from './order-item.entity';
 import { ProductEntity } from '../product/product.entity';
 import { UserEntity } from '../users/user.entity';
 import { CreateOrderInput } from './dto/create-order.input';
-
+import { OrderStatus } from './enums/order.enum';
+import { Order } from './order.entity';
 @Injectable()
 export class OrderService {
   constructor(
@@ -142,4 +143,10 @@ export class OrderService {
     order.status = OrderStatus.CANCELLED;
     return this.orderRepo.save(order);
   }
+
+  async getAllOrders(): Promise<Order[]> {
+  return this.orderRepo.find({
+    order: { created_at: 'DESC' },
+  });
+}
 }
