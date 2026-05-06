@@ -3,10 +3,7 @@
 # ------------------------------------------------------
 
 type AuthResponse {
-  Role: String!
   access_token: String!
-  id: Float!
-  username: String!
 }
 
 input CreateOrderInput {
@@ -88,6 +85,7 @@ type ProductEntity {
 }
 
 type Query {
+  getAllOrders: [Order!]!
   getAllProducts: [ProductEntity!]!
   getProductById(id: String!): ProductEntity!
   getProfile: UserType!
@@ -119,7 +117,6 @@ input UpdateProductInput {
 type UserEntity {
   email: String!
   id: String!
-  orders: [Order!]
   role: String!
   username: String!
 }

@@ -1,7 +1,8 @@
 import { InputType, Field, Int, Float } from '@nestjs/graphql';
 import { IsString, IsEnum, IsArray, ValidateNested, IsNumber, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PaymentMethod } from '../order.entity';
+
+import { PaymentMethod } from '../enums/payment.enum';
 
 @InputType()
 export class OrderItemInput {

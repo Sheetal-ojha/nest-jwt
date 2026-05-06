@@ -1,4 +1,4 @@
-import { ObjectType, Field, Float, registerEnumType } from '@nestjs/graphql';
+import { ObjectType, Field, Float } from '@nestjs/graphql';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,24 +11,8 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 import { OrderItem } from './order-item.entity';
-
-export enum OrderStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  SHIPPED = 'SHIPPED',
-  DELIVERED = 'DELIVERED',
-  CANCELLED = 'CANCELLED',
-}
-
-export enum PaymentMethod {
-  CASH_ON_DELIVERY = 'CASH_ON_DELIVERY',
-  CREDIT_CARD = 'CREDIT_CARD',
-  ESEWA = 'ESEWA',
-  KHALTI = 'KHALTI',
-}
-
-registerEnumType(OrderStatus, { name: 'OrderStatus' });
-registerEnumType(PaymentMethod, { name: 'PaymentMethod' });
+import { OrderStatus, } from './enums/order.enum'; 
+import { PaymentMethod } from './enums/payment.enum';
 
 @ObjectType()
 @Entity()
