@@ -28,10 +28,12 @@ type Mutation {
   deleteOrder(id: String!): Order!
   deleteProduct(id: String!): Boolean!
   login(input: LoginInput!): AuthResponse!
+  resetPassword(input: ResetPasswordInput!): String!
   signup(input: RegisterInput!): UserType!
   updateMyOrder(id: String!, shipping_address: String!): Order!
   updateOrder(id: String!, status: OrderStatus!): Order!
   updateProduct(id: String!, input: UpdateProductInput!): ProductEntity!
+  updateProfile(input: UpdateProfileInput!): UserEntity!
 }
 
 type Order {
@@ -84,14 +86,44 @@ type ProductEntity {
   quantity: Int
 }
 
+type ProfileOrder {
+  id: String!
+  order_date: DateTime!
+  order_items: [ProfileOrderItem!]
+  payment_method: PaymentMethod!
+  shipping_address: String!
+  status: OrderStatus!
+  total_amount: Float!
+}
+
+type ProfileOrderItem {
+  id: String!
+  price: Float!
+  productName: String!
+  quantity: Float!
+  subtotal: Float!
+}
+
+type ProfileType {
+  email: String!
+  id: String!
+  orders: [ProfileOrder!]
+  profilepic: String
+  role: String!
+  username: String!
+}
+
 type Query {
   getAllOrders: [Order!]!
   getAllProducts: [ProductEntity!]!
+  getMyProfile: ProfileType!
   getProductById(id: String!): ProductEntity!
   getProfile: UserType!
+  getUserByUsername(username: String!): UserEntity!
   hello: String!
   order(id: String!): Order!
   ordersByUser: [Order!]!
+  users: [UserEntity!]!
 }
 
 input RegisterInput {
@@ -99,6 +131,11 @@ input RegisterInput {
   password: String!
   role: Role
   username: String!
+}
+
+input ResetPasswordInput {
+  email: String!
+  newPassword: String!
 }
 
 enum Role {
@@ -114,9 +151,15 @@ input UpdateProductInput {
   quantity: Int
 }
 
+input UpdateProfileInput {
+  profilepic: String
+  username: String
+}
+
 type UserEntity {
   email: String!
   id: String!
+  profilepic: String
   role: String!
   username: String!
 }

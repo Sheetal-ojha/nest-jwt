@@ -36,7 +36,12 @@ export class UserEntity {
 role!: Role;
 
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  profilepic?: string;
+
+
 @OneToMany(() => Order, (order) => order.user)
-// @Field(() => [Order], { nullable: true })
+// @Field(() => [Order], { nullable: true })//loop create garcha getall order ma
 orders?: Order[];
 }
