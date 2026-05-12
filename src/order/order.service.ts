@@ -103,6 +103,20 @@ export class OrderService {
     const order = await this.orderRepo.findOne({ where: { id } });
     if (!order) throw new NotFoundException('Order not found');
 
+      if (order.status === OrderStatus.CANCELLED) {
+    throw new BadRequestException('Cannot update a cancelled order');
+  }
+
+    if (order.status === OrderStatus.DELIVERED) {
+    throw new BadRequestException('Cannot update a delivered order');
+  }
+
+    if (order.status === OrderStatus.SHIPPED && status !== OrderStatus.DELIVERED) {
+    throw new BadRequestException(
+      'Order is already shipped only update to delivered',
+    );
+  }
+
     order.status = status;
     return this.orderRepo.save(order);
   }
