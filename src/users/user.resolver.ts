@@ -11,6 +11,7 @@ import { UpdateProfileInput } from './dto/update-profile.input';
 import { UserType } from './dto/user.type';
 import { ProfileType } from './dto/profile.type';
 import { ResetPasswordInput } from './dto/reset-password.input';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -46,6 +47,8 @@ export class UserResolver {
   ) {
     return this.userService.updateProfile(user.userId, input);
   }
+
+  @Public()
   @Mutation(() => String)
 resetPassword(@Args('input') input: ResetPasswordInput) {
   return this.userService.resetPassword(input);
