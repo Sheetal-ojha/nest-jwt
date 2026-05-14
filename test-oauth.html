@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OAuth Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    button {
+      padding: 12px 24px;
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    button:hover { background: #357abd; }
+    .token-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      word-break: break-all;
+      display: none;
+    }
+    .success { color: green; font-weight: bold; }
+    pre {
+      background: #eee;
+      padding: 10px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Google OAuth Test</h2>
+  <button onclick="loginWithGoogle()">Login with Google</button>
+
+  <div class="token-box" id="tokenBox">
+    <p class="success">✅ Login Successful!</p>
+
+    <p><strong>Access Token:</strong></p>
+    <pre id="tokenDisplay"></pre>
+
+    <p><strong>Decoded User:</strong></p>
+    <pre id="userDisplay"></pre>
+
+    <button onclick="testProtectedRoute()">
+      Test Protected Route (getMyProfile)
+    </button>
+    <pre id="profileResult"></pre>
+  </div>
+
+  <script>
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('access_token');
+
+      if (token) {
+        localStorage.setItem('access_token', token);
+        document.getElementById('tokenBox').style.display = 'block';
+        document.getElementById('tokenDisplay').textContent = token;
+
+      
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        document.getElementById('userDisplay').textContent =
+          JSON.stringify(payload, null, 2);
+
+     
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+
+    function loginWithGoogle() {
+      window.location.href = 'http://localhost:4000/auth/google';
+    }
+
+    async function testProtectedRoute() {
+      const token = localStorage.getItem('access_token');
+
+      const response = await fetch('http://localhost:4000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          query: `
+            query {
+              getMyProfile {
+                id
+                username
+                email
+                role
+              }
+            }
+          `
+        })
+      });
+
+      const data = await response.json();
+      document.getElementById('profileResult').textContent =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>

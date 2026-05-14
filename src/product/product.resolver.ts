@@ -21,7 +21,7 @@ async createProduct(
   @Args('price', { type: () => Float  }) price: number,
   @Args('description') description: string,
   @Args('image', { nullable: true }) image: string,
-  @Args('quantity', { type: () => Int, defaultValue: 0 }) quantity: number, // ✅ add
+  @Args('quantity', { type: () => Int, defaultValue: 0 }) quantity: number, 
 ) {
   return this.productService.create({ name, price, description, image, quantity });
 }
@@ -43,8 +43,8 @@ async updateProduct(
   @Args('id', { type: () => String }) id: string,
   @Args('input') input: UpdateProductInput,
 ) {
-  console.log("RAW INPUT:", JSON.stringify(input)); // add this
-  console.log("INPUT KEYS:", Object.keys(input));   // add this
+  console.log("RAW INPUT:", JSON.stringify(input)); 
+  console.log("INPUT KEYS:", Object.keys(input));   
   return this.productService.update(id, input);
 }
 

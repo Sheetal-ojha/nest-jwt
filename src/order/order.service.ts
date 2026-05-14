@@ -4,13 +4,13 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
 import { OrderItem } from './order-item.entity';
 import { ProductEntity } from '../product/product.entity';
 import { UserEntity } from '../users/user.entity';
 import { CreateOrderInput } from './dto/create-order.input';
-import { OrderStatus } from './enums/order.enum';
+import { OrderStatus,  } from './enums/order.enum';
 import { Order } from './order.entity';
 @Injectable()
 export class OrderService {
@@ -145,7 +145,7 @@ export class OrderService {
       throw new BadRequestException('Only PENDING orders can be cancelled');
     }
 
-    // decrease order after save order
+   
     for (const item of order.order_items) {
       await this.productRepo.increment(
         { id: item.product.id },
@@ -163,4 +163,35 @@ export class OrderService {
     order: { created_at: 'DESC' },
   });
 }
-}
+
+
+async getProductReportByDateRange(
+  from: string,
+  to: string,
+): Promise<ProductEntity[]> {
+  const dateFrom = new Date(from);
+  const dateTo = new Date(to);
+
+  const products = await this.productRepo.find({
+    where: {
+      createdAt: Between(dateFrom, dateTo),
+    },
+    relations: {
+      orderItems: {
+        order: {
+          user: true,
+        },
+      },
+    },
+  });
+
+  return products.map((product) => ({
+    ...product,
+    orderItems: product.orderItems?.filter(
+      (item) =>
+        item.order &&
+        item.order.order_date >= dateFrom &&
+        item.order.order_date <= dateTo,
+    ),
+  }));
+}}

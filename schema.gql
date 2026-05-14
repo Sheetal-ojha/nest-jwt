@@ -51,6 +51,7 @@ type Order {
 
 type OrderItem {
   id: String!
+  order: Order
   price: Float!
   product: ProductEntity!
   quantity: Int!
@@ -78,10 +79,12 @@ enum PaymentMethod {
 }
 
 type ProductEntity {
+  createdAt: DateTime!
   description: String!
   id: String!
   image: String
   name: String
+  orderItems: [OrderItem!]
   price: Float
   quantity: Int
 }
@@ -118,6 +121,7 @@ type Query {
   getAllProducts: [ProductEntity!]!
   getMyProfile: ProfileType!
   getProductById(id: String!): ProductEntity!
+  getProductReport(from: String!, to: String!): [ProductEntity!]!
   getProfile: UserType!
   getUserByUsername(username: String!): UserEntity!
   hello: String!
@@ -158,6 +162,7 @@ input UpdateProfileInput {
 
 type UserEntity {
   email: String!
+  googleId: String
   id: String!
   profilepic: String
   role: String!

@@ -8,7 +8,7 @@ import { AuthResolver } from './auth.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from '../users/user.module';
 import { Role } from './roles.enum';
-
+import { GoogleStrategy } from './google.strategy';
 @Module({
   imports: [
     UserModule,
@@ -20,13 +20,13 @@ JwtModule.registerAsync({
   useFactory: (config: ConfigService) => ({
     secret: config.get<string>('JWT_SECRET')!,
     signOptions: {
-      expiresIn: (config.get<string>('JWT_EXPIRES_IN') || '1d') as any,
+      expiresIn: (config.get<string>('JWT_EXPIRES_IN') || '7d') as any,
     },
   }),
 })
   ],
 
-  providers: [AuthService, AuthResolver, JwtStrategy],
+  providers: [AuthService, AuthResolver, JwtStrategy,GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

@@ -23,9 +23,9 @@ async function bootstrap() {
   );
 
 
-  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
-
+ app.use(express.static(join(process.cwd())));  //new add garako html ko lagi
 
   const port = process.env.PORT || 4000;
 
