@@ -40,6 +40,10 @@ role!: Role;
   @Column({ nullable: true })
   profilepic?: string;
 
+@Field({nullable:true})
+ @Column({ nullable: true })
+  googleId?: string;
+  
 
 @OneToMany(() => Order, (order) => order.user)
 // @Field(() => [Order], { nullable: true })//loop create garcha getall order ma

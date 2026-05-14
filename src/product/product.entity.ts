@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, CreateDateColumn, OneToMany } from 'typeorm';
 import { ObjectType,Field, Int, Float } from '@nestjs/graphql';
+import { OrderItem } from '../order/order-item.entity';
 // import { Stock } from '../stock/stock.entity';
 
 
@@ -33,4 +34,16 @@ export class ProductEntity {
   @Field(() => Int, {nullable:true})
   @Column({ default: 0 })
   quantity!: number;
+
+
+  @Field()
+  @CreateDateColumn()
+  createdAt!:Date;
+
+
+
+    @OneToMany(() => OrderItem, (item) => item.product, { nullable: true })
+    @Field(()=> [OrderItem],{nullable:true})
+  orderItems?: OrderItem[];
+
 }

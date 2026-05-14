@@ -6,6 +6,7 @@ import { RegisterInput } from './dto/register.input';
 import { Role } from './roles.enum';
 import { UserEntity } from '../users/user.entity';
 
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -71,4 +72,38 @@ export class AuthService {
       role: assignedRole,
     });
   }
+
+
+
+  async googleLogin(googleUser: {
+  email: string;
+  username: string;
+  googleId: string;
+}) {
+ 
+  let user = await this.userService.findByEmail(googleUser.email);
+
+  if (!user) {
+  
+    user = await this.userService.createUser({
+      email: googleUser.email,
+      username: googleUser.username,
+      googleId: googleUser.googleId,
+      password: await bcrypt.hash(Math.random().toString(36), 10),
+      role: Role.USER,
+    });
+  }
+
+ //hamro jwt token created huna000
+  const payload = {
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+    username: user.username,
+  };
+
+  return {
+    access_token: this.jwtService.sign(payload),
+  };
+}
 }

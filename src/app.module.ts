@@ -18,10 +18,13 @@ import { ProductModule } from './product/product.module';
 import { UploadModule } from './uploads/upload.module';
 import { UploadController } from './uploads/upload.controller';
 import { OrderModule } from './order/order.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 
 
 @Module({
+  controllers:[AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -66,12 +69,14 @@ import { OrderModule } from './order/order.module';
     ProductModule, 
     UploadModule,
     OrderModule,
+   
   ],
 
     //  controllers: [UploadController],
 
   providers: [
   AppResolver,
+  AppService,
   {
     provide: APP_GUARD,
     useClass: AuthGuard,

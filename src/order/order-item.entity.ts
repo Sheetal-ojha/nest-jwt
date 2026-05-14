@@ -18,9 +18,11 @@ export class OrderItem {
 
   @ManyToOne(() => Order, (order) => order.order_items, {
     onDelete: 'CASCADE',
+    eager:false,
   })
   @JoinColumn()
-  order!: Order;
+  @Field(()=> Order,{nullable:true})
+  order?: Order;
 
   @ManyToOne(() => ProductEntity, { eager: true })
   @JoinColumn()

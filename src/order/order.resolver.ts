@@ -7,8 +7,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../auth/roles.enum';
-import { OrderStatus } from './enums/order.enum';
+import { OrderStatus, } from './enums/order.enum';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { ProductEntity } from '../product/product.entity';
+
 
 @Resolver()
 export class OrderResolver {
@@ -56,17 +58,26 @@ export class OrderResolver {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.USER, Role.ADMIN)
-@Mutation(() => Order)
-updateMyOrder(
-  @Args('id') id: string,
-  @Args('shipping_address') shipping_address: string,
-  @CurrentUser() user: any,
-) {
-  return this.orderService.updateMyOrder(id, user.userId, shipping_address);
-}
+  @Roles(Role.USER, Role.ADMIN)
+  @Mutation(() => Order)
+  updateMyOrder(
+    @Args('id') id: string,
+    @Args('shipping_address') shipping_address: string,
+    @CurrentUser() user: any,
+  ) {
+    return this.orderService.updateMyOrder(id, user.userId, shipping_address);
+  }
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+ @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
+@Query(() => [ProductEntity])
+getProductReport(
+  @Args('from') from: string,
+  @Args('to') to: string,
+) {
+  return this.orderService.getProductReportByDateRange(from, to);
+}
+  @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 @Query(() => [Order])
 getAllOrders() {
